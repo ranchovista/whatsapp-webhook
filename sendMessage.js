@@ -1,38 +1,29 @@
-const express = require('express');
 const axios = require('axios');
-const app = express();
-const PORT = process.env.PORT || 3000;
 
-const token = 'EAAWAWkTzl7cBOZBAyR9UVaG2Dft2NzODgZB55AoPJyXURtpZAHJA2nlxhVjCud0VgcVP8zi4SaEjZCRzvoRLzdfa5uDhaGAixhfOdQIhofvZCxcKPcZCLxcOhZAciUeyaPJmlLLhqeRKUnSX4gNmmtU616NbNCaP6hPGTyIZBp25o4dW0fKsd8elVYgxFVNXZAFmCtUHWJ27II4BFMjbPfJ9BZBknQ';
-const phoneNumberId = '486534671206976';
-const recipient = '17852560817';
-
-app.get('/send-message', async (req, res) => {
+const sendMessage = async (phoneNumberId, recipientPhone, token) => {
   try {
     const response = await axios.post(
       `https://graph.facebook.com/v13.0/${phoneNumberId}/messages`,
       {
-        messaging_product: 'whatsapp',
-        to: recipient,
-        type: 'template',
+        messaging_product: "whatsapp",
+        to: recipientPhone,
+        type: "template",
         template: {
-          name: 'hello_world',
-          language: { code: 'en_US' }
-        }
+          name: "hello_world", // or "welcome_message" if that's what you're testing
+          language: { code: "en_US" },
+        },
       },
       {
         headers: {
           Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
+          "Content-Type": "application/json",
+        },
       }
     );
-    res.send('Message sent successfully: ' + JSON.stringify(response.data));
+    console.log("Message sent:", response.data);
   } catch (error) {
-    res.send('Error sending message: ' + JSON.stringify(error.response.data));
+    console.error("Error sending message:", error.response ? error.response.data : error.message);
   }
-});
+};
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+module.exports = sendMessage;

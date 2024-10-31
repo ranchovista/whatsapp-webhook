@@ -1,10 +1,13 @@
+const express = require('express');
 const axios = require('axios');
+const app = express();
+const PORT = process.env.PORT || 3000;
 
-const token = 'EAAWAWkTzl7cBO0VqLxV0bhSitppNkgziMeO1odobeg7EZBZC0bmjPCYUJvGsgKvM1ZB9F1UDTgOjf9ZANAMQgAZANb5nUya33AxcECKISHUy60ZAcQYpFOYZAVALwF6srPDdsqoC9nZANGJBAp6JCRmb9LbZAM5mkj0OXcLd7RZCFrr9M3mZCdBioRyf5kVbCCoqRPHiZA9whSS87hFHugUSIZAH49r5a';
+const token = 'EAAWAWkTzl7cBOZBAyR9UVaG2Dft2NzODgZB55AoPJyXURtpZAHJA2nlxhVjCud0VgcVP8zi4SaEjZCRzvoRLzdfa5uDhaGAixhfOdQIhofvZCxcKPcZCLxcOhZAciUeyaPJmlLLhqeRKUnSX4gNmmtU616NbNCaP6hPGTyIZBp25o4dW0fKsd8elVYgxFVNXZAFmCtUHWJ27II4BFMjbPfJ9BZBknQ';
 const phoneNumberId = '486534671206976';
 const recipient = '17852560817';
 
-async function sendMessage() {
+app.get('/send-message', async (req, res) => {
   try {
     const response = await axios.post(
       `https://graph.facebook.com/v13.0/${phoneNumberId}/messages`,
@@ -13,7 +16,7 @@ async function sendMessage() {
         to: recipient,
         type: 'template',
         template: {
-          name: 'welcome_message',
+          name: 'hello_world',
           language: { code: 'en_US' }
         }
       },
@@ -24,10 +27,12 @@ async function sendMessage() {
         }
       }
     );
-    console.log('Message sent successfully:', response.data);
+    res.send('Message sent successfully: ' + JSON.stringify(response.data));
   } catch (error) {
-    console.error('Error sending message:', error.response ? error.response.data : error.message);
+    res.send('Error sending message: ' + JSON.stringify(error.response.data));
   }
-}
+});
 
-sendMessage();
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
